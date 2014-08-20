@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+        <!-- all modules must be listed here -->
+        <link rel="mod-include" data-mod="common" data-deps="" href="./modules/common.js" />
+        <link rel="mod-include" data-mod="index" data-deps="common" href="./modules/index.js" />
+        <link rel="mod-include" data-mod="page" data-deps="common, index" href="./modules/page.js" />
+        <link rel="mod-include" data-mod="init" data-deps="common,page" href="./modules/init.js" />
+
+        <script src="../src/include.js"></script>
+    </head>
+    <body>
+    </body>
+    <script>
+        include('init', function(){
+            console.log('rocket.init')
+        });
+
+        include('init', function(){
+            console.log('rocket.init')
+        });
+    </script>
+</html>
