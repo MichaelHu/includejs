@@ -4,22 +4,44 @@
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
         <!-- all modules must be listed here -->
-        <link rel="mod-include" data-mod="common" data-deps="" href="./modules/common.js" />
+        <link rel="mod-include" data-mod="zepto" data-deps="" href="./modules/zepto.pkg.js" />
+        <link rel="mod-include" data-mod="common" data-deps="zepto" href="./modules/common.js" />
         <link rel="mod-include" data-mod="index" data-deps="common" href="./modules/index.js" />
-        <link rel="mod-include" data-mod="page" data-deps="common, index" href="./modules/page.js" />
-        <link rel="mod-include" data-mod="init" data-deps="common,page" href="./modules/init.js" />
+        <link rel="mod-include" data-mod="page" data-deps="common" href="./modules/page.js" />
+        <link rel="mod-include" data-mod="init" data-deps="zepto" href="./modules/init.js" />
 
         <script src="../src/include.js"></script>
     </head>
     <body>
+<div>
+    <div id="btn_go_index">Index Page</div>
+    <div id="btn_go_detail">Detail Page</div>
+</div>
     </body>
     <script>
         include('init', function(){
-            console.log('rocket.init')
+            console.log('rocket.init 1')
         });
 
         include('init', function(){
-            console.log('rocket.init')
+            console.log('rocket.init 2')
         });
+
+        include('init', function(){
+            console.log('rocket.init 3')
+
+            $('#btn_go_index').on('click', function(){
+                include('index', function(){
+                    console.log('go index'); 
+                }); 
+            });
+
+            $('#btn_go_detail').on('click', function(){
+                include('page', function(){
+                    console.log('go detail'); 
+                }); 
+            });
+        });
+        
     </script>
 </html>
