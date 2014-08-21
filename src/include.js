@@ -1,4 +1,6 @@
-window.include = (function(){
+window.include = (function(options){
+
+var CACHE_KEY_PREFIX = '';
 
 function include(modName, content){
 
@@ -26,9 +28,18 @@ function include(modName, content){
 }
 
 include._mods = {};
+include.setCacheKeyPrefix = function(prefix){
+    CACHE_KEY_PREFIX = prefix || '';
+};
+
+
+
+
+
 
 function _load(modName){
-    var mod = include._mods[modName];
+    var mod = include._mods[modName],
+        cache;
     if(!mod){
         console.log('no mod defininition');
         return;
@@ -38,8 +49,15 @@ function _load(modName){
         return;
     }
 
-    _get_script(mod.uri);
     mod.state = 'LOADING';
+    cache = _getCache(modName);
+    if(cache){
+        // console.log('cache: ' + cache);
+        include(modName, cache);
+    }
+    else{
+        _get_script(mod.uri);
+    }
 }
 
 function _add(modName, callback){
@@ -83,6 +101,11 @@ function _callback(modName){
     }
 }
 
+
+
+
+
+
 function _exec(modName, content){
     var mod = include._mods[modName];
     if(!mod){
@@ -98,6 +121,11 @@ function _exec(modName, content){
         mod.state = 'LOADED';
         mod.content = content;
         _callback(modName);
+        if(mod.localize){
+            setTimeout(function(){
+                _setCache(modName, content);
+            }, 0);
+        }
     }
 }
 
@@ -131,6 +159,13 @@ function _wait(modName, content){
     mod.content = content;
 }
 
+
+
+
+
+
+
+
 function _get_script(url, callback){
     var script = document.createElement('script');
 
@@ -149,6 +184,7 @@ function _initMods(){
         link,
         mod,
         uri,
+        localize,
         deps;    
 
     for(var i=0; i<links.length; i++){
@@ -159,10 +195,12 @@ function _initMods(){
 
             uri = link.getAttribute('href');
             mod = link.getAttribute('data-mod');
+            localize = link.getAttribute('data-localize') || 0;
             include._mods[mod] = {
                 uri: uri 
                 , deps: !deps ? [] : deps.split(',')
                 , state: 'INIT'
+                , localize: localize
                 , callback: []
             };
         }
@@ -227,8 +265,86 @@ function _isDepsReady(modName){
     return true;
 }
 
+
+
+
+
+
+
+
+function _getMD5(uri){
+    var rMD5 = /.+_([0-9a-f]{7})\.js$/,
+        match, md5 = '';
+    if(match = uri.match(rMD5)){
+        md5 = match[1]; 
+    }
+
+    return md5;
+}
+
+function _getCacheKey(modName){
+    return ( CACHE_KEY_PREFIX 
+        ? CACHE_KEY_PREFIX + '_' : '' ) + modName;
+}
+
+function _getCache(modName){
+    var mod = include._mods[modName],
+        key = _getCacheKey(modName),
+        md5, cache, pkg;
+
+    if(!mod){
+        console.log('no mod defininition');
+        return false;
+    }
+
+    md5 = _getMD5(mod.uri);
+    cache = localStorage.getItem(key);
+
+    if(cache){
+        pkg = JSON.parse(cache);
+        if(pkg.md5 == md5){
+            return pkg.content;
+        }
+    }
+    return false;
+}
+
+function _setCache(modName, content){
+    var mod = include._mods[modName],
+        key = _getCacheKey(modName),
+        md5, pkg;
+
+    if(!mod){
+        console.log('no mod defininition');
+        return false;
+    }
+
+    md5 = _getMD5(mod.uri);
+    if(content){
+        pkg = {
+            md5: md5
+            , content: content
+        };
+        localStorage.setItem(
+            key
+            , JSON.stringify(pkg) 
+        );
+        return true;
+    }
+
+    return false;
+}
+
+
+
+
+
+
+
+
+
 _initMods();
-console.log(include._mods);
+// console.log(include._mods);
 
 return include;
 

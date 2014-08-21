@@ -3,14 +3,17 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 
-        <!-- all modules must be listed here -->
-        <link rel="mod-include" data-mod="zepto" data-deps="" href="./modules/zepto.pkg.js" />
-        <link rel="mod-include" data-mod="common" data-deps="zepto" href="./modules/common.js" />
-        <link rel="mod-include" data-mod="index" data-deps="common" href="./modules/index.js" />
-        <link rel="mod-include" data-mod="page" data-deps="common" href="./modules/page.js" />
-        <link rel="mod-include" data-mod="init" data-deps="zepto" href="./modules/init.js" />
+<!-- all modules must be listed here -->
+<link rel="mod-include" data-mod="zepto" data-deps="" data-localize="1" href="./modules/zepto.pkg.js" />
+<link rel="mod-include" data-mod="common" data-deps="zepto" data-localize="1" href="./modules/common.js" />
+<link rel="mod-include" data-mod="index" data-deps="common" href="./modules/index.js" />
+<link rel="mod-include" data-mod="page" data-deps="common" href="./modules/page.js" />
+<link rel="mod-include" data-mod="init" data-deps="zepto" href="./modules/init.js" />
 
-        <script src="../src/include.js"></script>
+<!-- invoke include.js after module declarations -->
+<script src="../src/include.js"></script>
+<script>include.setCacheKeyPrefix('news_phone');</script>
+
     </head>
     <body>
 <div>
