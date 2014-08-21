@@ -60,7 +60,7 @@ immediately after module declarations, `include.js` is import using script tag. 
         border: 1px solid #999;
     }
 
-#tip{
+    #tip{
         margin: 10px 5px;    
         color: #518aea;
         font: normal normal 14px/16px monospace;
