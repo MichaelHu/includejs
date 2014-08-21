@@ -34,12 +34,13 @@ immediately after module declarations, `include.js` is import using script tag. 
 2. `include.setCacheKeyPrefix`
   * default `CACHE_KEY_PREFIX` is ''
 
-## 4. Script Pakage Format
+## 4. Script Pakage File
 
 1. js package file format: 
 
         include(modName, "JSCONTENT");
-2. example:
+
+2. example, content of file `index.js`:
 
         include('index', "console.log(\"index\")");
 
