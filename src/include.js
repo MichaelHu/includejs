@@ -49,12 +49,20 @@ function _add(modName, callback){
         return;
     }
 
-    if('LOADED' == mod.state){
-        _callback(modName);
-        return; 
+    /**
+     * multi-call include(modName, callback)
+     * will result in multi-call of callback
+     */
+    if('function' == typeof callback){
+        mod.callback.push({
+            done: false
+            , func: callback
+        });
     }
 
-    mod.callback.push(callback);
+    if('LOADED' == mod.state){
+        _callback(modName);
+    }
 }
 
 function _callback(modName){
@@ -67,9 +75,9 @@ function _callback(modName){
    
     callbacks = mod.callback; 
     for(var i=0; i<callbacks.length; i++){
-        if('function' == typeof callbacks[i]
+        if('function' == typeof callbacks[i].func
             && !callbacks[i].done){
-            callbacks[i].apply(window);
+            callbacks[i].func.apply(window);
             callbacks[i].done = true;
         }
     }
