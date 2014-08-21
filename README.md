@@ -36,4 +36,71 @@ immediately after module declarations, `include.js` is import using script tag. 
 
 ## 4. Examples
 
-    
+    <!DOCTYPE html>
+    <html>
+        <head>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+            <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" />
+
+    <!-- all modules must be listed here -->
+    <link rel="mod-include" data-mod="zepto" data-deps="" data-localize="1" href="./modules/zepto.pkg.js" />
+    <link rel="mod-include" data-mod="common" data-deps="zepto" data-localize="1" href="./modules/common.js" />
+    <link rel="mod-include" data-mod="index" data-deps="common" href="./modules/index.js" />
+    <link rel="mod-include" data-mod="page" data-deps="common" href="./modules/page.js" />
+    <link rel="mod-include" data-mod="init" data-deps="zepto" href="./modules/init.js" />
+
+    <!-- invoke include.js after module declarations -->
+    <script src="../src/include.js"></script>
+    <script>include.setCacheKeyPrefix('news_phone');</script>
+
+    <style type="text/css">
+    .btn{
+        padding: 5px;
+        margin: 5px 0;
+        border: 1px solid #999;
+    }
+
+#tip{
+        margin: 10px 5px;    
+        color: #518aea;
+        font: normal normal 14px/16px monospace;
+    }
+    </style>
+
+        </head>
+        <body>
+    <div>
+        <div class="btn" id="btn_go_index">Click to Go Index Page</div>
+        <div class="btn" id="btn_go_detail">Click to Go Detail Page</div>
+        <div id="tip"></div>
+    </div>
+        </body>
+        <script>
+            include('init', function(){
+                console.log('rocket.init 1')
+            });
+
+            include('init', function(){
+                console.log('rocket.init 2')
+            });
+
+            include('init', function(){
+                console.log('rocket.init 3')
+
+                $('#btn_go_index').on('click', function(){
+                    include('index', function(){
+                        console.log('go index'); 
+                        $('#tip')[0].innerHTML += 'go index<br>';     
+                    }); 
+                });
+
+                $('#btn_go_detail').on('click', function(){
+                    include('page', function(){
+                        console.log('go detail'); 
+                        $('#tip')[0].innerHTML += 'go detail<br>';     
+                    }); 
+                });
+            });
+            
+        </script>
+    </html>
