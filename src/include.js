@@ -1,6 +1,17 @@
 window.include = (function(options){
 
 var CACHE_KEY_PREFIX = '';
+var IS_LOCALSTORAGE_ENABLED = true;
+
+try{ 
+    localStorage.setItem('test_includejs_cache','test'); 
+} 
+catch(e){ 
+    IS_LOCALSTORAGE_ENABLED = false;
+}
+
+
+
 
 function include(modName, content){
 
@@ -292,7 +303,7 @@ function _getCache(modName){
         key = _getCacheKey(modName),
         md5, cache, pkg;
 
-    if(!mod){
+    if(!mod || !IS_LOCALSTORAGE_ENABLED){
         console.log('no mod defininition');
         return false;
     }
@@ -314,7 +325,7 @@ function _setCache(modName, content){
         key = _getCacheKey(modName),
         md5, pkg;
 
-    if(!mod){
+    if(!mod || !IS_LOCALSTORAGE_ENABLED){
         console.log('no mod defininition');
         return false;
     }
