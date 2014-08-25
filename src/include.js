@@ -10,10 +10,21 @@ catch(e){
     IS_LOCALSTORAGE_ENABLED = false;
 }
 
-
-
-
 function include(modName, content){
+    if('object' == typeof modName
+        && modName.length > 0){
+        _addMultiModsCallback(modName, content);
+        for(var i=0; i<modName.length; i++){
+            _include(modName[i]);
+        }
+    }
+    else{
+        _include(modName, content);
+    }
+}
+
+
+function _include(modName, content){
 
     // script loaded from remote server
     if('string' == typeof content){
@@ -39,6 +50,7 @@ function include(modName, content){
 }
 
 include._mods = {};
+include._multiModsCallback = [];
 include.setCacheKeyPrefix = function(prefix){
     CACHE_KEY_PREFIX = prefix || '';
 };
@@ -64,7 +76,7 @@ function _load(modName){
     cache = _getCache(modName);
     if(cache){
         // console.log('cache: ' + cache);
-        include(modName, cache);
+        _include(modName, cache);
     }
     else{
         _get_script(mod.uri);
@@ -91,6 +103,7 @@ function _add(modName, callback){
 
     if('LOADED' == mod.state){
         _callback(modName);
+        _execMultiModsCallback(modName);
     }
 }
 
@@ -132,6 +145,7 @@ function _exec(modName, content){
         mod.state = 'LOADED';
         mod.content = content;
         _callback(modName);
+        _execMultiModsCallback(modName);
         if(mod.localize){
             setTimeout(function(){
                 _setCache(modName, content);
@@ -238,7 +252,7 @@ function _includeDeps(modName){
 
     for(var i=0; i<deps.length; i++){
         if(_isInit(deps[i])){
-            include(deps[i]);
+            _include(deps[i]);
         } 
     }
 }
@@ -277,6 +291,57 @@ function _isDepsReady(modName){
 }
 
 
+
+
+
+
+function _addMultiModsCallback(modList, callback){
+    var arr = include._multiModsCallback;
+
+    if('function' != typeof callback){
+        return;
+    } 
+
+    arr.push({
+        done: false 
+        , func: callback
+        , deps: modList
+    });
+}
+
+function _execMultiModsCallback(modName){
+    var mod = include._mods[modName],
+        arr = include._multiModsCallback,
+        item, deps, isReady;
+
+    if(!mod){
+        console.log('no mod defininition');
+        return;
+    }
+
+    for(var i=0; i<arr.length; i++){
+        item = arr[i];
+        if(item.done){
+            continue;
+        }
+        
+        deps = item.deps; 
+        isReady = true;
+        for(var j=0; j<deps.length; j++){
+            if(!_isReady(deps[j])){
+                isReady = false;
+                break;
+            }
+        } 
+
+        if(isReady){
+            if('function' == typeof item.func){
+                item.func.apply(window);
+                item.done = true;
+            }
+        }
+    }
+}
 
 
 

@@ -38,12 +38,20 @@
 </div>
     </body>
     <script>
+        include(['zepto', 'common'], function(){
+            console.log('zepto, common');
+        });
+
         include('init', function(){
             console.log('rocket.init 1')
         });
 
         include('init', function(){
             console.log('rocket.init 2')
+        });
+
+        include(['zepto', 'init'], function(){
+            console.log('zepto, init');
         });
 
         include('init', function(){
