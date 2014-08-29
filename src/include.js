@@ -74,7 +74,7 @@ function _load(modName){
 
     mod.state = 'LOADING';
     cache = _getCache(modName);
-    if(cache){
+    if(cache && mod.localize){
         // console.log('cache: ' + cache);
         _include(modName, cache);
     }
@@ -220,12 +220,13 @@ function _initMods(){
 
             uri = link.getAttribute('href');
             mod = link.getAttribute('data-mod');
-            localize = link.getAttribute('data-localize') || 0;
+            localize = link.getAttribute('data-cache');
             include._mods[mod] = {
                 uri: uri 
                 , deps: !deps ? [] : deps.split(',')
                 , state: 'INIT'
-                , localize: localize
+                , localize: !localize || '0' == localize
+                    ? false : true
                 , callback: []
             };
         }
@@ -369,7 +370,7 @@ function _getCache(modName){
         md5, cache, pkg;
 
     if(!mod || !IS_LOCALSTORAGE_ENABLED){
-        console.log('no mod defininition');
+        console.log('no mod defininition or localStorage disabled');
         return false;
     }
 
@@ -378,7 +379,8 @@ function _getCache(modName){
 
     if(cache){
         pkg = JSON.parse(cache);
-        if(pkg.md5 == md5){
+        if(pkg.md5 == md5 && md5){
+            mod.cacheMD5 = md5;
             return pkg.content;
         }
     }
@@ -391,12 +393,20 @@ function _setCache(modName, content){
         md5, pkg;
 
     if(!mod || !IS_LOCALSTORAGE_ENABLED){
-        console.log('no mod defininition');
+        console.log('no mod defininition or localStorage disabled');
         return false;
     }
 
     md5 = _getMD5(mod.uri);
-    if(content){
+    if(content 
+        && ( 
+            // if has md5 and cache is out-of-date 
+            md5 != '' && md5 != mod.cacheMD5
+            // if has no md5
+            || md5 == ''         
+            )
+        ){
+        console.log('set cache of mod ' + modName);
         pkg = {
             md5: md5
             , content: content

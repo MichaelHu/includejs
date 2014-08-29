@@ -7,8 +7,8 @@ a simple js loader for mobile webapp.
 modules are declared in head using link tag, example code below:
 
     <!-- all modules must be listed here -->
-    <link rel="mod-include" data-mod="zepto" data-deps="" data-localize="1" href="./modules/zepto.pkg.js" />
-    <link rel="mod-include" data-mod="common" data-deps="zepto" data-localize="1" href="./modules/common.js" />
+    <link rel="mod-include" data-mod="zepto" data-deps="" data-cache="1" href="./modules/zepto.pkg.js" />
+    <link rel="mod-include" data-mod="common" data-deps="zepto" data-cache="1" href="./modules/common.js" />
     <link rel="mod-include" data-mod="index" data-deps="common" href="./modules/index.js" />
     <link rel="mod-include" data-mod="page" data-deps="common" href="./modules/page.js" />
     <link rel="mod-include" data-mod="init" data-deps="zepto" href="./modules/init.js" />
@@ -19,7 +19,7 @@ there are five attributes on link tag:
 2. `data-mod`: module name
 3. `data-deps`: dependent modules, a list separated by comma
 4. `href`: modules uri
-5. `data-localize`: specify whether the module is cached in client's localStorage
+5. `data-cache`: specify whether the module is cached in client's localStorage
 
 ## 2. Import includejs
 immediately after module declarations, `include.js` is import using script tag. example code goes below:
@@ -53,8 +53,8 @@ immediately after module declarations, `include.js` is import using script tag. 
             <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" />
 
     <!-- all modules must be listed here -->
-    <link rel="mod-include" data-mod="zepto" data-deps="" data-localize="1" href="./modules/zepto.pkg.js" />
-    <link rel="mod-include" data-mod="common" data-deps="zepto" data-localize="1" href="./modules/common.js" />
+    <link rel="mod-include" data-mod="zepto" data-deps="" data-cache="1" href="./modules/zepto.pkg.js" />
+    <link rel="mod-include" data-mod="common" data-deps="zepto" data-cache="1" href="./modules/common.js" />
     <link rel="mod-include" data-mod="index" data-deps="common" href="./modules/index.js" />
     <link rel="mod-include" data-mod="page" data-deps="common" href="./modules/page.js" />
     <link rel="mod-include" data-mod="init" data-deps="zepto" href="./modules/init.js" />
