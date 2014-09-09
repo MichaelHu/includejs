@@ -79,7 +79,7 @@ function _load(modName){
         _include(modName, cache);
     }
     else{
-        _get_script(mod.uri);
+        _request(mod);
     }
 }
 
@@ -190,8 +190,51 @@ function _wait(modName, content){
 
 
 
+function _request(mod){
+    if('xhr' == mod.format){
+        _xhr({
+            url: mod.uri
+            , success: function(resp){
+                if(resp){
+                    include(mod.name, resp);
+                }
+            }
+        });
+    }
+    else{
+        _script(mod.uri);
+    }
+}
 
-function _get_script(url, callback){
+function _empty(){}
+
+function _xhr(option){
+    var xhr = new window.XMLHttpRequest(),
+        protocol = option.protocol || 'http:';
+
+    xhr.onreadystatechange = function(){
+        if(xhr.readyState == 4){
+            xhr.onreadystatechange = _empty; 
+            if( ( xhr.status >= 200 && xhr.status < 300)
+                || xhr.status == 304
+                || (xhr.status == 0 && protocol == 'file:')
+                ){
+                result = xhr.responseText;
+                option.success && option.success(result);
+            }
+        }
+    };
+
+    xhr.open(
+        'GET'
+        , option.url
+        , true // isasync
+    );
+
+    xhr.send(null);
+}
+
+function _script(url, callback){
     var script = document.createElement('script');
 
     script.addEventListener('load', function(e){
@@ -210,6 +253,7 @@ function _initMods(){
         mod,
         uri,
         localize,
+        format,
         deps;    
 
     for(var i=0; i<links.length; i++){
@@ -221,10 +265,13 @@ function _initMods(){
             uri = link.getAttribute('href');
             mod = link.getAttribute('data-mod');
             localize = link.getAttribute('data-cache');
+            format = link.getAttribute('data-format');
             include._mods[mod] = {
                 uri: uri 
+                , name: mod
                 , deps: !deps ? [] : deps.split(',')
                 , state: 'INIT'
+                , format: 'include' == format ? 'include' : 'xhr'
                 , localize: !localize || '0' == localize
                     ? false : true
                 , callback: []

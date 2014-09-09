@@ -7,16 +7,17 @@ a simple js loader for mobile webapp.
 modules are declared in head using link tag, example code below:
 
     <!-- all modules must be listed here -->
-    <link rel="mod-include" data-mod="zepto" data-deps="" data-cache="1" href="./modules/zepto.pkg.js" />
-    <link rel="mod-include" data-mod="common" data-deps="zepto" data-cache="1" href="./modules/common.js" />
-    <link rel="mod-include" data-mod="index" data-deps="common" href="./modules/index.js" />
-    <link rel="mod-include" data-mod="page" data-deps="common" href="./modules/page.js" />
-    <link rel="mod-include" data-mod="init" data-deps="zepto" href="./modules/init.js" />
+    <link rel="mod-include" data-format="include" data-mod="zepto" data-deps="" data-cache="1" href="./modules/zepto.pkg.js" />
+    <link rel="mod-include" data-format="" data-mod="common" data-deps="zepto" data-cache="1" href="./modules/common.js" />
+    <link rel="mod-include" data-format="include" data-mod="index" data-deps="common" href="./modules/index.js" />
+    <link rel="mod-include" data-format="" data-mod="page" data-deps="common" href="./modules/page.js" />
+    <link rel="mod-include" data-format="include" data-mod="init" data-deps="zepto" href="./modules/init.js" />
 
 there are five attributes on link tag:
 
 1. `rel`: must be `mod-include`
 2. `data-mod`: module name
+3. `data-format`: module format, default is `xhr` unless explicitly be set to `include`
 3. `data-deps`: dependent modules, a list separated by comma
 4. `href`: modules uri
 5. `data-cache`: specify whether the module is cached in client's localStorage
@@ -53,11 +54,11 @@ immediately after module declarations, `include.js` is import using script tag. 
             <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0" />
 
     <!-- all modules must be listed here -->
-    <link rel="mod-include" data-mod="zepto" data-deps="" data-cache="1" href="./modules/zepto.pkg.js" />
+    <link rel="mod-include" data-format="include" data-mod="zepto" data-deps="" data-cache="1" href="./modules/zepto.pkg.js" />
     <link rel="mod-include" data-mod="common" data-deps="zepto" data-cache="1" href="./modules/common.js" />
-    <link rel="mod-include" data-mod="index" data-deps="common" href="./modules/index.js" />
+    <link rel="mod-include" data-format="include" data-mod="index" data-deps="common" href="./modules/index.js" />
     <link rel="mod-include" data-mod="page" data-deps="common" href="./modules/page.js" />
-    <link rel="mod-include" data-mod="init" data-deps="zepto" href="./modules/init.js" />
+    <link rel="mod-include" data-format="include" data-mod="init" data-deps="zepto" href="./modules/init.js" />
 
     <!-- invoke include.js after module declarations -->
     <script src="../src/include.js"></script>
