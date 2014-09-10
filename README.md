@@ -38,12 +38,24 @@ immediately after module declarations, `include.js` is import using script tag. 
 ## 4. Script Pakage File
 
 1. js package file format: 
+    
+    * format: js file
 
-        include(modName, "JSCONTENT");
+            JSCONTENT
+
+    * format: string
+
+            include(modName, "JSCONTENT");
 
 2. example, content of file `index.js`:
 
-        include('index', "console.log(\"index\")");
+    * format: js file
+
+            console.log("index");
+
+    * format: string
+    
+            include('index', "console.log(\"index\")");
 
 ## 5. Examples
 
